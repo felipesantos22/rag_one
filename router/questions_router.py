@@ -11,7 +11,7 @@ def get_client():
     return OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
-@router.post("/")
+@router.post("")
 def ask(data: QuestionRequest):
     client = get_client()
 
