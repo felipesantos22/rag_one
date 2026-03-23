@@ -13,36 +13,44 @@ def get_client():
 
 @router.post("")
 def ask(data: QuestionRequest):
-    client = get_client()
+    try:
+        client = get_client()
 
-    question = data.question
-    collection = get_collection()
+        question = data.question
+        collection = get_collection()
 
-    emb = client.embeddings.create(
-        model="text-embedding-3-small",
-        input=question
-    )
+        emb = client.embeddings.create(
+            model="text-embedding-3-small",
+            input=question
+        )
 
-    results = collection.query(
-        query_embeddings=[emb.data[0].embedding],
-        n_results=3
-    )
+        results = collection.query(
+            query_embeddings=[emb.data[0].embedding],
+            n_results=3
+        )
 
-    context = "\n".join(results["documents"][0])
+        docs = results.get("documents", [])
 
-    print("CONTEXT:", context)
+        if not docs or not docs[0]:
+            context = 'Sem contexto relevante.'
+        else:
+            context = "\n".join(docs[0])
 
-    response = client.responses.create(
-        model="gpt-4.1-mini",
-        input=f"""
-        Use o contexto abaixo para responder.
+        response = client.responses.create(
+            model="gpt-4.1-mini",
+            input=f"""
+            Use o contexto abaixo para responder.
 
-        Context:
-        {context}
+            Context:
+            {context}
 
-        Questions:
-        {question}
-        """
-    )
+            Question:
+            {question}
+            """
+        )
 
-    return {"answer": response.output_text}
+        return {"answer": response.output_text}
+
+    except Exception as e:
+        print("🔥 ERROR:", e)
+        return {"error": str(e)}
