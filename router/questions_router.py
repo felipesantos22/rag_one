@@ -46,6 +46,7 @@ def ask(data: QuestionRequest):
             - NÃO diga frases como "com base no contexto"
             - Responda de forma natural como um especialista
             - Se não souber, diga: "Não encontrei essa informação"
+            - Fale em primeira pessoa, como se fosse um agente do site
 
             Informações:
             {context}
