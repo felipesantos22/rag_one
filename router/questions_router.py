@@ -39,12 +39,18 @@ def ask(data: QuestionRequest):
         response = client.responses.create(
             model="gpt-4.1-mini",
             input=f"""
-            Use o contexto abaixo para responder.
+            Você é um assistente que responde perguntas com base nas informações fornecidas.
 
-            Context:
+            Regras:
+            - NÃO mencione a palavra "contexto"
+            - NÃO diga frases como "com base no contexto"
+            - Responda de forma natural como um especialista
+            - Se não souber, diga: "Não encontrei essa informação"
+
+            Informações:
             {context}
 
-            Question:
+            Pergunta:
             {question}
             """
         )
